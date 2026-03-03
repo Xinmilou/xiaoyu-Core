@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>xiaoyu-Core 示例页面</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- 左侧导航栏 -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>xiaoyu-Core</h2>
+                <p>API 管理平台</p>
+            </div>
+            <nav class="sidebar-nav">
+                <ul>
+                    <li class="active">
+                        <a href="#dashboard" onclick="switchSection('dashboard')">
+                            <span class="nav-icon">📊</span>
+                            <span class="nav-text">仪表盘</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#api-test" onclick="switchSection('api-test')">
+                            <span class="nav-icon">🔌</span>
+                            <span class="nav-text">API 测试</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#services" onclick="switchSection('services')">
+                            <span class="nav-icon">💬</span>
+                            <span class="nav-text">AI 聊天</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#settings" onclick="switchSection('settings')">
+                            <span class="nav-icon">⚙️</span>
+                            <span class="nav-text">设置</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- 主内容区域 -->
+        <main class="main-content">
+            <!-- 顶部导航栏 -->
+            <header class="main-header">
+                <div class="header-left">
+                    <h1 id="sectionTitle">仪表盘</h1>
+                    <p id="sectionDescription">系统概览和统计数据</p>
+                </div>
+            </header>
+
+            <!-- 仪表盘板块 -->
+            <section id="dashboard" class="section active">
+                <!-- 服务信息区域 -->
+                <div class="service-info-section">
+                    <div class="section-header">
+                        <h2>服务信息</h2>
+                        <p>xiaoyu-Core 服务状态详情</p>
+                    </div>
+                    
+                    <div class="info-grid">
+                        <div class="info-card">
+                            <h3>基本信息</h3>
+                            <div class="info-item">
+                                <strong>服务名称:</strong>
+                                <span id="serviceName">xiaoyu-Core</span>
+                            </div>
+                            <div class="info-item">
+                                <strong>当前时间:</strong>
+                                <span id="currentTime"></span>
+                            </div>
+                            <div class="info-item">
+                                <strong>页面加载时间:</strong>
+                                <span id="loadTime"></span>
+                            </div>
+                            <div class="info-item">
+                                <strong>服务版本:</strong>
+                                <span>1.0.0</span>
+                            </div>
+                        </div>
+                        
+                        <div class="info-card">
+                            <h3>系统状态</h3>
+                            <div class="info-item">
+                                <strong>CPU 使用率:</strong>
+                                <span id="cpuUsage">--</span>
+                            </div>
+                            <div class="info-item">
+                                <strong>内存使用率:</strong>
+                                <span id="memoryUsage">--</span>
+                            </div>
+                            <div class="info-item">
+                                <strong>磁盘使用率:</strong>
+                                <span id="diskUsage">--</span>
+                            </div>
+                            <div class="info-item">
+                                <strong>网络状态:</strong>
+                                <span id="networkStatus">--</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- API 测试板块 -->
+            <section id="api-test" class="section">
+                <div class="api-test-section">
+                    <div class="section-header">
+                        <h2>API 测试</h2>
+                        <p>测试 xiaoyu-Core 的 API 接口</p>
+                    </div>
+                    
+                    <div class="test-cards">
+                        <!-- 聊天测试 -->
+                        <div class="test-card">
+                            <div class="test-card-header">
+                                <h3>聊天测试</h3>
+                                <span class="test-card-badge">POST</span>
+                            </div>
+                            <div class="test-card-body">
+                                <p class="api-path">/api/xiaoyu/test/chat</p>
+                                <div class="test-config-group">
+                                    <label>Provider:</label>
+                                    <select id="chatProvider">
+                                        <option value="">默认</option>
+                                    </select>
+                                </div>
+                                <div class="test-config-group">
+                                    <label>Temperature:</label>
+                                    <input type="number" id="chatTemperature" value="0.7" min="0" max="2" step="0.1">
+                                </div>
+                                <div class="echo-input-group">
+                                    <input type="text" id="chatTestInput" placeholder="输入测试消息" value="你好">
+                                    <button onclick="testChat()" id="chatTestBtn" class="test-button">
+                                        测试聊天
+                                    </button>
+                                </div>
+                                <div id="chatTestResult" class="test-result"></div>
+                            </div>
+                        </div>
+
+                        <!-- 图片识别测试 -->
+                        <div class="test-card">
+                            <div class="test-card-header">
+                                <h3>图片识别测试</h3>
+                                <span class="test-card-badge">POST</span>
+                            </div>
+                            <div class="test-card-body">
+                                <p class="api-path">/api/xiaoyu/test/chat (视觉模型)</p>
+                                <div class="test-config-group">
+                                    <label>提示词:</label>
+                                    <input type="text" id="visionPrompt" placeholder="输入提示词" value="请描述这张图片的内容">
+                                </div>
+                                <input type="file" id="visionImageInput" accept="image/*" style="display:none" onchange="handleVisionImageSelect(event)">
+                                <div class="vision-upload-area" onclick="document.getElementById('visionImageInput').click()" id="visionUploadArea">
+                                    <div class="vision-upload-icon">🖼️</div>
+                                    <div class="vision-upload-text">点击或拖拽图片到此处上传</div>
+                                </div>
+                                <div id="visionImagePreview" class="vision-image-preview"></div>
+                                <div class="echo-input-group">
+                                    <button onclick="testVision()" id="visionTestBtn" class="test-button">
+                                        识别图片
+                                    </button>
+                                </div>
+                                <div id="visionTestResult" class="test-result"></div>
+                            </div>
+                        </div>
+
+                        <!-- 工作流测试 -->
+                        <div class="test-card">
+                            <div class="test-card-header">
+                                <h3>工作流测试</h3>
+                                <span class="test-card-badge">POST</span>
+                            </div>
+                            <div class="test-card-body">
+                                <p class="api-path">/api/xiaoyu/test/workflow</p>
+                                <div class="test-config-group">
+                                    <label>工作流:</label>
+                                    <div class="workflow-select-row">
+                                        <select id="workflowSelect">
+                                            <option value="xiaoyu-chat">xiaoyu-chat</option>
+                                            <option value="doc-indexer">doc-indexer</option>
+                                        </select>
+                                        <button onclick="listWorkflows()" id="workflowsBtn" class="test-button small">刷新列表</button>
+                                    </div>
+                                </div>
+                                <div class="echo-input-group">
+                                    <input type="text" id="workflowInput" placeholder="输入测试消息" value="获取项目上下文">
+                                    <button onclick="testWorkflow()" id="workflowBtn" class="test-button">
+                                        测试工作流
+                                    </button>
+                                </div>
+                                <div id="workflowResult" class="test-result"></div>
+                            </div>
+                        </div>
+
+                        <!-- 获取提供商列表 -->
+                        <div class="test-card">
+                            <div class="test-card-header">
+                                <h3>提供商列表</h3>
+                                <span class="test-card-badge">GET</span>
+                            </div>
+                            <div class="test-card-body">
+                                <p class="api-path">/api/xiaoyu/test/providers</p>
+                                <button onclick="listProviders()" id="providersBtn" class="test-button">
+                                    获取提供商列表
+                                </button>
+                                <div id="providersResult" class="test-result"></div>
+                            </div>
+                        </div>
+
+                        <!-- 上下文记忆测试 -->
+                        <div class="test-card">
+                            <div class="test-card-header">
+                                <h3>上下文记忆测试</h3>
+                                <span class="test-card-badge">POST</span>
+                            </div>
+                            <div class="test-card-body">
+                                <p class="api-path">/api/xiaoyu/memory/chat</p>
+                                <div class="test-config-group">
+                                    <label>会话ID:</label>
+                                    <input type="text" id="memorySessionId" placeholder="会话ID" value="test-session">
+                                </div>
+                                <div class="echo-input-group">
+                                    <input type="text" id="memoryInput" placeholder="输入消息（会记住上下文）" value="你好，我叫小明">
+                                    <button onclick="testMemoryChat()" id="memoryChatBtn" class="test-button">
+                                        发送
+                                    </button>
+                                </div>
+                                <div id="memoryChatResult" class="test-result"></div>
+                                <div class="memory-actions">
+                                    <button onclick="getMemoryStats()" class="test-button secondary">
+                                        查看记忆状态
+                                    </button>
+                                    <button onclick="clearMemory()" class="test-button danger">
+                                        清除记忆
+                                    </button>
+                                </div>
+                                <div id="memoryStatsResult" class="test-result"></div>
+                            </div>
+                        </div>
+
+                        <!-- 桌面工具测试 -->
+                        <div class="test-card">
+                            <div class="test-card-header">
+                                <h3>桌面工具测试</h3>
+                                <span class="test-card-badge">POST</span>
+                            </div>
+                            <div class="test-card-body">
+                                <p class="api-path">/api/xiaoyu/test/desktop</p>
+                                <div class="test-config-group">
+                                    <label>工具:</label>
+                                    <select id="desktopToolSelect" onchange="onDesktopToolChange()">
+                                        <option value="screenshot">截图 (screenshot)</option>
+                                        <option value="system_info">系统信息 (system_info)</option>
+                                        <option value="get_time">获取时间 (get_time)</option>
+                                        <option value="send_image">发送图片 (send_image)</option>
+                                        <option value="send_video">发送视频 (send_video)</option>
+                                    </select>
+                                </div>
+                                <div id="desktopImageInput" class="test-config-group" style="display:none;">
+                                    <label>图片路径:</label>
+                                    <input type="text" id="desktopImagePath" placeholder="本地路径或网络URL" value="https://picsum.photos/400/300">
+                                </div>
+                                <div id="desktopVideoInput" class="test-config-group" style="display:none;">
+                                    <label>视频路径:</label>
+                                    <input type="text" id="desktopVideoPath" placeholder="本地路径或网络URL" value="">
+                                </div>
+                                <div class="echo-input-group">
+                                    <button onclick="testDesktopTool()" id="desktopTestBtn" class="test-button">
+                                        执行工具
+                                    </button>
+                                    <button onclick="listDesktopTools()" class="test-button secondary">
+                                        列出工具
+                                    </button>
+                                </div>
+                                <div id="desktopTestResult" class="test-result"></div>
+                            </div>
+                        </div>
+
+                        <!-- 插件测试 -->
+                        <div class="test-card">
+                            <div class="test-card-header">
+                                <h3>插件测试</h3>
+                                <span class="test-card-badge">POST</span>
+                            </div>
+                            <div class="test-card-body">
+                                <p class="api-path">/api/xiaoyu/test/plugin/match</p>
+                                <div class="test-config-group">
+                                    <label>测试命令:</label>
+                                    <input type="text" id="pluginTestCommand" placeholder="输入命令测试匹配" value="#随机图片">
+                                </div>
+                                <div class="echo-input-group">
+                                    <button onclick="testPluginMatch()" id="pluginMatchBtn" class="test-button">
+                                        测试匹配
+                                    </button>
+                                    <button onclick="listPlugins()" class="test-button secondary">
+                                        列出插件
+                                    </button>
+                                    <button onclick="getPluginStats()" class="test-button secondary">
+                                        统计信息
+                                    </button>
+                                </div>
+                                <div id="pluginTestResult" class="test-result"></div>
+                                <div id="pluginListResult" class="test-result"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- AI 聊天板块 -->
+            <section id="services" class="section">
+                <div class="ai-chat-section full-height">
+                    <div class="chat-container full-height">
+                        <div class="chat-header-bar">
+                            <div class="chat-title">AI 对话</div>
+                            <div class="chat-actions">
+                                <button onclick="openSettingsPanel()" class="chat-action-btn" title="模型与人设设置">
+                                    <span class="btn-icon">⚙️</span>
+                                    <span class="btn-text">设置</span>
+                                </button>
+                                <button onclick="clearChatScreen()" class="chat-action-btn" title="清屏（保留上下文记忆）">
+                                    <span class="btn-icon">🗑️</span>
+                                    <span class="btn-text">清屏</span>
+                                </button>
+                                <button onclick="clearChatMemory()" class="chat-action-btn danger" title="清除上下文记忆">
+                                    <span class="btn-icon">🧹</span>
+                                    <span class="btn-text">清除记忆</span>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="chat-settings-bar">
+                            <div class="settings-item">
+                                <label>模型:</label>
+                                <select id="aiModelSelect" onchange="onModelChange()">
+                                    <option value="">加载中...</option>
+                                </select>
+                            </div>
+                            <div class="settings-item persona-preview">
+                                <label>人设:</label>
+                                <span id="personaPreview" class="persona-text">默认人设</span>
+                            </div>
+                        </div>
+                        <div id="chatMessages" class="chat-messages">
+                            <div class="message system">
+                                <div class="message-content">
+                                    <p>您好！我是 xiaoyu-Core 的 AI 助手，支持文字和图片对话，有什么可以帮助您的吗？</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="chat-input-area">
+                            <div id="imagePreview" class="image-preview"></div>
+                            <div class="chat-input-row">
+                                <input type="file" id="imageInput" accept="image/*" style="display:none" onchange="handleImageSelect(event)">
+                                <button onclick="document.getElementById('imageInput').click()" class="image-btn" title="上传图片">📷</button>
+                                <input type="text" id="chatInput" placeholder="输入您的问题..." onkeypress="handleChatKeypress(event)">
+                                <button onclick="sendChatMessage()" id="chatSendBtn" class="test-button">发送</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 设置面板 -->
+                    <div id="settingsPanel" class="settings-panel">
+                        <div class="settings-panel-header">
+                            <h3>模型与人设设置</h3>
+                            <button onclick="closeSettingsPanel()" class="close-btn">✕</button>
+                        </div>
+                        <div class="settings-panel-body">
+                            <div class="settings-group">
+                                <h4>模型选择</h4>
+                                <div class="settings-item">
+                                    <label>当前模型:</label>
+                                    <select id="panelModelSelect" onchange="syncModelSelect()">
+                                        <option value="">加载中...</option>
+                                    </select>
+                                </div>
+                                <div class="model-info" id="modelInfo">
+                                    <p>模型信息加载中...</p>
+                                </div>
+                            </div>
+                            <div class="settings-group">
+                                <h4>人设设置</h4>
+                                <div class="settings-item">
+                                    <label>人设描述:</label>
+                                    <textarea id="personaInput" placeholder="输入自定义人设，例如：你是一个爱玩游戏的大学生，说话喜欢用游戏术语..." rows="4"></textarea>
+                                </div>
+                                <div class="persona-presets">
+                                    <label>预设人设:</label>
+                                    <div class="preset-buttons">
+                                        <button onclick="setPersonaPreset('default')" class="preset-btn">默认</button>
+                                        <button onclick="setPersonaPreset('cute')" class="preset-btn">可爱少女</button>
+                                        <button onclick="setPersonaPreset('chill')" class="preset-btn">随和网友</button>
+                                        <button onclick="setPersonaPreset('gentle')" class="preset-btn">温柔姐姐</button>
+                                        <button onclick="setPersonaPreset('funny')" class="preset-btn">搞笑担当</button>
+                                    </div>
+                                </div>
+                                <div class="settings-actions">
+                                    <button onclick="savePersona()" class="test-button">保存人设</button>
+                                    <button onclick="resetPersona()" class="test-button secondary">重置</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div id="settingsOverlay" class="settings-overlay" onclick="closeSettingsPanel()"></div>
+                </div>
+            </section>
+
+            <!-- 设置板块 -->
+            <section id="settings" class="section">
+                <div class="settings-page">
+                    <div class="settings-page-header">
+                        <h2>⚙️ 系统设置</h2>
+                        <p>配置 xiaoyu-Core 服务参数</p>
+                    </div>
+                    
+                    <div class="settings-tabs">
+                        <button class="settings-tab active" onclick="switchSettingsTab('general')">常规设置</button>
+                        <button class="settings-tab" onclick="switchSettingsTab('api')">API 配置</button>
+                        <button class="settings-tab" onclick="switchSettingsTab('model')">模型设置</button>
+                        <button class="settings-tab" onclick="switchSettingsTab('persona')">人设管理</button>
+                    </div>
+                    
+                    <div class="settings-content">
+                        <!-- 常规设置 -->
+                        <div id="settings-general" class="settings-tab-content active">
+                            <div class="settings-card modern">
+                                <div class="settings-card-header">
+                                    <span class="settings-card-icon">🌐</span>
+                                    <h3>网络配置</h3>
+                                </div>
+                                <div class="settings-card-body">
+                                    <div class="setting-row">
+                                        <div class="setting-label">
+                                            <label>HTTP 端口</label>
+                                            <span class="setting-desc">Web服务监听端口</span>
+                                        </div>
+                                        <div class="setting-input">
+                                            <input type="number" id="httpPort" value="8888" min="1" max="65535">
+                                        </div>
+                                    </div>
+                                    <div class="setting-row">
+                                        <div class="setting-label">
+                                            <label>HTTPS 端口</label>
+                                            <span class="setting-desc">安全连接端口</span>
+                                        </div>
+                                        <div class="setting-input">
+                                            <input type="number" id="httpsPort" value="8889" min="1" max="65535">
+                                        </div>
+                                    </div>
+                                    <div class="setting-row">
+                                        <div class="setting-label">
+                                            <label>WebSocket 路径</label>
+                                            <span class="setting-desc">WS连接端点</span>
+                                        </div>
+                                        <div class="setting-input">
+                                            <input type="text" id="wsPath" value="/mcp/ws, /device, /stdin" readonly class="readonly">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="settings-card modern">
+                                <div class="settings-card-header">
+                                    <span class="settings-card-icon">🔐</span>
+                                    <h3>安全设置</h3>
+                                </div>
+                                <div class="settings-card-body">
+                                    <div class="setting-row">
+                                        <div class="setting-label">
+                                            <label>API 密钥</label>
+                                            <span class="setting-desc">接口访问认证密钥</span>
+                                        </div>
+                                        <div class="setting-input">
+                                            <div class="password-input">
+                                                <input type="password" id="apiKey" value="dra7AI1uHZMolRDEhcJ2JQdB7E1pnI2nU2ROrd0vwQPYrhuhovXsse2pGNlWYzdj">
+                                                <button class="toggle-password" onclick="togglePasswordVisibility('apiKey')">👁️</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="setting-row">
+                                        <div class="setting-label">
+                                            <label>启用速率限制</label>
+                                            <span class="setting-desc">防止接口滥用</span>
+                                        </div>
+                                        <div class="setting-input">
+                                            <label class="toggle-switch">
+                                                <input type="checkbox" checked>
+                                                <span class="toggle-slider"></span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <div class="setting-row">
+                                        <div class="setting-label">
+                                            <label>启用 CORS</label>
+                                            <span class="setting-desc">允许跨域请求</span>
+                                        </div>
+                                        <div class="setting-input">
+                                            <label class="toggle-switch">
+                                                <input type="checkbox" checked>
+                                                <span class="toggle-slider"></span>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- API 配置 -->
+                        <div id="settings-api" class="settings-tab-content">
+                            <div class="settings-card modern">
+                                <div class="settings-card-header">
+                                    <span class="settings-card-icon">🔌</span>
+                                    <h3>API 端点</h3>
+                                </div>
+                                <div class="settings-card-body">
+                                    <div class="api-endpoint-list">
+                                        <div class="api-endpoint">
+                                            <div class="endpoint-method post">POST</div>
+                                            <div class="endpoint-path">/api/xiaoyu/test/chat</div>
+                                            <div class="endpoint-desc">AI聊天接口</div>
+                                        </div>
+                                        <div class="api-endpoint">
+                                            <div class="endpoint-method post">POST</div>
+                                            <div class="endpoint-path">/api/xiaoyu/test/workflow</div>
+                                            <div class="endpoint-desc">工作流执行</div>
+                                        </div>
+                                        <div class="api-endpoint">
+                                            <div class="endpoint-method post">POST</div>
+                                            <div class="endpoint-path">/api/xiaoyu/test/plugin/match</div>
+                                            <div class="endpoint-desc">插件命令匹配</div>
+                                        </div>
+                                        <div class="api-endpoint">
+                                            <div class="endpoint-method get">GET</div>
+                                            <div class="endpoint-path">/api/xiaoyu/test/providers</div>
+                                            <div class="endpoint-desc">获取提供商列表</div>
+                                        </div>
+                                        <div class="api-endpoint">
+                                            <div class="endpoint-method get">GET</div>
+                                            <div class="endpoint-path">/api/xiaoyu/test/plugins</div>
+                                            <div class="endpoint-desc">获取插件列表</div>
+                                        </div>
+                                        <div class="api-endpoint">
+                                            <div class="endpoint-method post">POST</div>
+                                            <div class="endpoint-path">/api/xiaoyu/memory/chat</div>
+                                            <div class="endpoint-desc">带记忆的聊天</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 模型设置 -->
+                        <div id="settings-model" class="settings-tab-content">
+                            <div class="settings-card modern">
+                                <div class="settings-card-header">
+                                    <span class="settings-card-icon">🤖</span>
+                                    <h3>默认模型配置</h3>
+                                </div>
+                                <div class="settings-card-body">
+                                    <div class="setting-row">
+                                        <div class="setting-label">
+                                            <label>Temperature</label>
+                                            <span class="setting-desc">控制回复随机性 (0-2)</span>
+                                        </div>
+                                        <div class="setting-input">
+                                            <input type="range" id="defaultTemp" min="0" max="2" step="0.1" value="0.8" oninput="updateRangeValue('defaultTemp', 'tempValue')">
+                                            <span id="tempValue" class="range-value">0.8</span>
+                                        </div>
+                                    </div>
+                                    <div class="setting-row">
+                                        <div class="setting-label">
+                                            <label>Max Tokens</label>
+                                            <span class="setting-desc">最大生成令牌数</span>
+                                        </div>
+                                        <div class="setting-input">
+                                            <input type="number" id="defaultMaxTokens" value="4000" min="100" max="32000">
+                                        </div>
+                                    </div>
+                                    <div class="setting-row">
+                                        <div class="setting-label">
+                                            <label>Top P</label>
+                                            <span class="setting-desc">核采样参数 (0-1)</span>
+                                        </div>
+                                        <div class="setting-input">
+                                            <input type="range" id="defaultTopP" min="0" max="1" step="0.1" value="0.9" oninput="updateRangeValue('defaultTopP', 'topPValue')">
+                                            <span id="topPValue" class="range-value">0.9</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 人设管理 -->
+                        <div id="settings-persona" class="settings-tab-content">
+                            <div class="settings-card modern">
+                                <div class="settings-card-header">
+                                    <span class="settings-card-icon">🎭</span>
+                                    <h3>人设配置</h3>
+                                </div>
+                                <div class="settings-card-body">
+                                    <div class="persona-editor">
+                                        <textarea id="globalPersonaInput" placeholder="输入全局人设描述..." rows="5">你是一个活泼可爱的女孩子，性格开朗、爱聊天、有点小调皮。喜欢用可爱的语气词和表情，会撒娇会吐槽，像朋友一样自然聊天。</textarea>
+                                    </div>
+                                    <div class="persona-presets-grid">
+                                        <div class="persona-preset-card" onclick="setGlobalPersona('cute')">
+                                            <div class="preset-icon">🌸</div>
+                                            <div class="preset-name">可爱少女</div>
+                                            <div class="preset-desc">活泼可爱、会撒娇会吐槽</div>
+                                        </div>
+                                        <div class="persona-preset-card" onclick="setGlobalPersona('chill')">
+                                            <div class="preset-icon">😎</div>
+                                            <div class="preset-name">随和网友</div>
+                                            <div class="preset-desc">说话随意、不装不作</div>
+                                        </div>
+                                        <div class="persona-preset-card" onclick="setGlobalPersona('gentle')">
+                                            <div class="preset-icon">💝</div>
+                                            <div class="preset-name">温柔姐姐</div>
+                                            <div class="preset-desc">温柔耐心、会关心人</div>
+                                        </div>
+                                        <div class="persona-preset-card" onclick="setGlobalPersona('funny')">
+                                            <div class="preset-icon">🤣</div>
+                                            <div class="preset-name">搞笑担当</div>
+                                            <div class="preset-desc">幽默风趣、喜欢玩梗</div>
+                                        </div>
+                                    </div>
+                                    <div class="settings-actions modern">
+                                        <button onclick="saveGlobalPersona()" class="btn-primary">💾 保存人设</button>
+                                        <button onclick="resetGlobalPersona()" class="btn-secondary">🔄 重置</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script src="app.js"></script>
+    <script src="stream/chat.js"></script>
+</body>
+</html>
