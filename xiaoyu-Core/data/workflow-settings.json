@@ -1,0 +1,42 @@
+{
+  "workflows": {
+    "xiaoyu-chat": true
+  },
+  "plugins": {
+    "发送日志": true,
+    "向日葵资源库": true,
+    "每日定时消息模拟": true,
+    "重启与关机": true,
+    "OneBot": true,
+    "Device": true,
+    "OPQBot": true,
+    "STDIN": true,
+    "终端工具": true,
+    "X工作流": true,
+    "XXX工作流": true,
+    "更新": true,
+    "帮助": true,
+    "添加消息": true,
+    "复读": true,
+    "制造消息": true,
+    "点歌插件": true,
+    "System Status": true,
+    "XRK-AI助手": true
+  },
+  "general": {
+    "httpPort": 8888,
+    "httpsPort": 8889,
+    "apiKey": "dra7AI1uHZMolRDEhcJ2JQdB7E1pnI2nU2ROrd0vwQPYrhuhovXsse2pGNlWYzdj"
+  },
+  "api": {
+    "endpoints": []
+  },
+  "model": {
+    "temperature": 1.4,
+    "maxTokens": 4000,
+    "topP": 0.9
+  },
+  "persona": {
+    "global": "你是一个活泼可爱的女孩子，性格开朗、爱聊天、有点小调皮。喜欢用可爱的语气词和表情，会撒娇会吐槽，像朋友一样自然聊天。"
+  }
+}
